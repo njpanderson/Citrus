@@ -1,0 +1,26 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{#
+/**
+ * Citrus plugin for Craft CMS 3.x
+ *
+ * Citrus Settings.twig
+ *
+ * @author    Neil Anderson
+ * @copyright Copyright (c) 2018 Neil Anderson
+ * @link      https://github.com/njpanderson/Citrus
+ * @package   Citrus
+ * @since     0.1.0
+ */
+#}
+
+{% import "_includes/forms" as forms %}
+
+{% do view.registerAssetBundle("njpanderson\\citrus\\assetbundles\\citrus\\CitrusAsset") %}
+
+{{ forms.textField({
+    label: 'Some Field',
+    instructions: 'Enter some setting here.',
+    id: 'someAttribute',
+    name: 'someAttribute',
+    value: settings['someAttribute']})
+}}
