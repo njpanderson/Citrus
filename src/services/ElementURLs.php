@@ -11,6 +11,7 @@
 namespace njpanderson\citrus\services;
 
 use njpanderson\citrus\Citrus;
+use njpanderson\citrus\models\URL;
 
 use Craft;
 use craft\base\Component;
@@ -46,6 +47,26 @@ class ElementURLs extends Component
      */
     public function get(Element $element)
     {
+        $urls = [];
+        $urls[] = $this->collectElementUrls($element);
+        // $urls[] = $this->getRelationalUrls($element);
+
+        return $urls;
+    }
+
+    private function collectElementUrls(Element $element) {
+        $url = new URL;
+
+        $url->fullURL = $this->getElementUrl($element);
+
+        return $url;
+    }
+
+    private function collectRelationalUrls(Element $element) {
+
+    }
+
+    private function getElementUrl(Element $element) {
         return $element->uri;
     }
 }

@@ -42,7 +42,7 @@ class Ban extends Component
      *
      * From any other plugin file, call it like this:
      *
-     *     Citrus::$plugin->elementurls->exampleService()
+     *     Citrus::$plugin->ban->banByElement()
      *
      * @return mixed
      */

@@ -10,16 +10,15 @@
 
 namespace njpanderson\citrus\services;
 
-use njpanderson\citrus\Citrus;
-use njpanderson\citrus\services\ElementURLs as ElementURLsService;
-use njpanderson\citrus\jobs\Purge as PurgeJob;
+use njpanderson\citrus\Citrus as CitrusBase;
 
 use Craft;
 use craft\base\Component;
-use craft\base\Element;
+// use craft\web\Request;
+use craft\helpers\UrlHelper;
 
 /**
- * Purge Service
+ * Citrus Service
  *
  * All of your plugin’s business logic should go in services, including saving data,
  * retrieving data, etc. They provide APIs that your controllers, template variables,
@@ -31,7 +30,7 @@ use craft\base\Element;
  * @package   Citrus
  * @since     0.1.0
  */
-class Purge extends Component
+class Citrus extends Component
 {
     // Public Methods
     // =========================================================================
@@ -42,31 +41,41 @@ class Purge extends Component
      *
      * From any other plugin file, call it like this:
      *
-     *     Citrus::$plugin->purge->purgeElement()
+     *     Citrus::$plugin->bindings->exampleService()
      *
      * @return mixed
      */
-    public function purgeElement(Element $element, bool $consoleDebug = false)
+    public function exampleService()
     {
-        Craft::info(
-            "Purging element '{$element->slug}' ({$element->id})",
-            __METHOD__
+        $result = 'something';
+        // Check our Plugin's settings for `someAttribute`
+        if (CitrusBase::$plugin->getSettings()->someAttribute) {
+        }
+
+        return $result;
+    }
+
+    /**
+     * Retrieve the 'current' hostname using the active site.
+     * @return string
+     */
+    public static function getCurrentHostName() {
+        return self::getHostnameFromUrl(
+            UrlHelper::siteHost()
         );
+    }
 
-        $urls = Citrus::$plugin->elementurls->get($element);
+    /**
+     * Convert a fully qualified URL into the hostname and return.
+     * @return string
+     */
+    public static function getHostnameFromUrl($url) {
+        $url = \parse_url($url);
 
-        $queue = Craft::$app->getQueue();
-
-        foreach ($urls as $url) {
-            /*$jobId = */$queue->push(new PurgeJob([
-                'url' => $url,
-                'consoleDebug' => $consoleDebug
-            ]));
+        if (!empty($url['host'])) {
+            return $url['host'];
         }
 
-        if ($consoleDebug) {
-            // Run queue immediately
-            $queue->run();
-        }
+        return '';
     }
 }

@@ -56,6 +56,7 @@ class Purge extends BaseJob
      * @var string
      */
     public $url = '';
+    public $consoleDebug = false;
 
     // Public Methods
     // =========================================================================
@@ -69,19 +70,8 @@ class Purge extends BaseJob
      */
     public function execute($queue)
     {
-        var_dump($queue);
-        exit;
-
-        // foreach ($queue as $job) {
-        //     if ($job['url']->validate()) {
-        //         Craft::info(
-        //             "Purging URL '{$job['url']->fullURL}'",
-        //             __METHOD__
-        //         );
-
-        //         // Purge the URL...
-        //     }
-        // }
+        var_dump($this->url->fullURL);
+        var_dump($this->consoleDebug);
     }
 
     // Protected Methods

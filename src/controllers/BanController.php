@@ -46,7 +46,7 @@ class BanController extends Controller
      *         The actions must be in 'kebab-case'
      * @access protected
      */
-    protected $allowAnonymous = ['index', 'do-something'];
+    protected $allowAnonymous = ['index', 'test'];
 
     // Public Methods
     // =========================================================================
@@ -60,19 +60,6 @@ class BanController extends Controller
     public function actionIndex()
     {
         $result = 'Welcome to the BanController actionIndex() method';
-
-        return $result;
-    }
-
-    /**
-     * Handle a request going to our plugin's actionDoSomething URL,
-     * e.g.: actions/citrus/ban/do-something
-     *
-     * @return mixed
-     */
-    public function actionDoSomething()
-    {
-        $result = 'Welcome to the BanController actionDoSomething() method';
 
         return $result;
     }

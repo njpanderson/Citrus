@@ -17,10 +17,90 @@
 
 {% do view.registerAssetBundle("njpanderson\\citrus\\assetbundles\\citrus\\CitrusAsset") %}
 
-{{ forms.textField({
-    label: 'Some Field',
-    instructions: 'Enter some setting here.',
-    id: 'someAttribute',
-    name: 'someAttribute',
-    value: settings['someAttribute']})
+<h2>Hosts</h2>
+<p>Enter a row for each Varnish host operating in front of this website.</p>
+
+{% if settings['errors'] is defined and settings['errors']['hosts'] is defined %}
+	{% set hostsErrors = {} %}
+
+	{% for error in settings['errors']['hosts'] %}
+		{% set errorRow = 'r' ~ error['row'] %}
+		{% set errorCell = 'c' ~ error['cell'] %}
+
+		{% set hostsErrors = hostsErrors|merge({
+			(errorRow ~ errorCell): {}
+		}) %}
+	{% endfor %}
+
+	<ul class="errors">
+		{% for error in settings['errors']['hosts'] %}
+			<li>{{ error.message }}</li>
+		{% endfor %}
+	</ul>
+{% endif %}
+
+{% set hostRows = {} %}
+
+{% for host in settings['hosts'] %}
+	{%
+		set hostRows = hostRows|merge({
+			(loop.index): {
+				url: {
+					value: host['url'],
+					hasErrors: (hostsErrors['r' ~ loop.index0 ~ 'curl'] is defined)
+				},
+				hostName: {
+					value: host['hostName'],
+					hasErrors: (hostsErrors['r' ~ loop.index0 ~ 'chostName'] is defined)
+				},
+				adminIP: {
+					value: host['adminIP'],
+					hasErrors: (hostsErrors['r' ~ loop.index0 ~ 'cadminIP'] is defined)
+				},
+				adminPort: {
+					value: host['adminPort'],
+					hasErrors: (hostsErrors['r' ~ loop.index0 ~ 'cadminPort'] is defined)
+				},
+				adminSecret: {
+					value: host['adminSecret'],
+					hasErrors: (hostsErrors['r' ~ loop.index0 ~ 'cadminSecret'] is defined)
+				}
+			}
+		})
+	%}
+{% endfor %}
+
+{{
+	forms.editableTableField({
+		id: 'citrus-hosts',
+		name: 'hosts',
+		cols: {
+			url: {
+				heading: 'URL',
+				type: 'input',
+				info: 'Fully qualified URL to the Varnish host, including protocol.'
+			},
+			hostName: {
+				heading: 'Hostname',
+				type: 'input',
+				placeholder: currentSite.baseUrl|hostname,
+				info: 'Hostname portion of the URL, if different.'
+			},
+			adminIP: {
+				heading: 'Admin IP',
+				type: 'input',
+				info: 'Varnish CLI admin IP'
+			},
+			adminPort: {
+				heading: 'Admin Port',
+				type: 'input'
+			},
+			adminSecret: {
+				heading: 'Admin Secret',
+				type: 'input',
+				info: 'Usually in /etc/varnish/secret'
+			}
+		},
+		rows: hostRows
+	})
 }}

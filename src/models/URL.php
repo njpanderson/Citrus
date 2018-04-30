@@ -38,7 +38,7 @@ class URL extends Model
      * @var string
      */
     public $fullURL = '';
-    public $debug = false;
+    public $consoleDebug = false;
 
     // Public Methods
     // =========================================================================
@@ -58,7 +58,7 @@ class URL extends Model
         return [
             [['fullURL'], 'required'],
             ['fullURL', 'string'],
-            ['debug', 'boolean', 'value' => false],
+            // ['consoleDebug', 'boolean', 'value' => false],
         ];
     }
 }

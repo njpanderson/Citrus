@@ -10,15 +10,18 @@
 
 namespace njpanderson\citrus;
 
+use njpanderson\citrus\services\Citrus as CitrusService;
 use njpanderson\citrus\services\Bindings as BindingsService;
 use njpanderson\citrus\variables\CitrusVariable;
 use njpanderson\citrus\models\Settings;
+use njpanderson\citrus\twig\CitrusTwig;
 
 use Craft;
 use craft\base\Plugin;
 use craft\services\Elements;
 use craft\services\Plugins;
 use craft\events\PluginEvent;
+use craft\console\Application as ConsoleApplication;
 use craft\web\UrlManager;
 use craft\web\twig\variables\CraftVariable;
 use craft\events\RegisterUrlRulesEvent;
@@ -86,12 +89,22 @@ class Citrus extends Plugin
         parent::init();
         self::$plugin = $this;
 
+        // Add in our console commands
+        if (Craft::$app instanceof ConsoleApplication) {
+            $this->controllerNamespace = 'njpanderson\citrus\console\controllers';
+        } else {
+            // Add in our Twig extension
+            $extension = new CitrusTwig;
+            Craft::$app->view->registerTwigExtension($extension);
+        }
+
         // Register our site routes
         Event::on(
             UrlManager::class,
             UrlManager::EVENT_REGISTER_SITE_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
                 $event->rules['siteActionTrigger1'] = 'citrus/ban';
+                $event->rules['siteActionTrigger2'] = 'citrus/purge';
             }
         );
 
@@ -100,7 +113,8 @@ class Citrus extends Plugin
             UrlManager::class,
             UrlManager::EVENT_REGISTER_CP_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
-                $event->rules['cpActionTrigger1'] = 'citrus/ban/do-something';
+                $event->rules['cpActionTrigger1'] = 'citrus/ban/test';
+                $event->rules['cpActionTrigger2'] = 'citrus/purge/test';
             }
         );
 

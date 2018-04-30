@@ -25,6 +25,14 @@
 return [
 
     // This controls blah blah blah
-    "someAttribute" => true,
+    "hosts" => [
+        'public' => [
+            'url' => '',
+            'hostName' => '',
+            'adminIP' => '',
+            'adminPort' => '',
+            'adminSecret' => ''
+        ]
+    ],
 
 ];

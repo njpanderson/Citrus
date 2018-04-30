@@ -14,6 +14,8 @@ use njpanderson\citrus\Citrus;
 
 use Craft;
 use craft\web\Controller;
+use craft\web\Request;
+use craft\web\Response;
 
 /**
  * Purge Controller
@@ -60,19 +62,6 @@ class PurgeController extends Controller
     public function actionIndex()
     {
         $result = 'Welcome to the PurgeController actionIndex() method';
-
-        return $result;
-    }
-
-    /**
-     * Handle a request going to our plugin's actionTest URL,
-     * e.g.: actions/citrus/purge/test
-     *
-     * @return mixed
-     */
-    public function actionTest()
-    {
-        $result = 'Welcome to the PurgeController actionTest() method';
 
         return $result;
     }

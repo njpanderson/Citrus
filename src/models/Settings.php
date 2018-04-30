@@ -14,6 +14,8 @@ use njpanderson\citrus\Citrus;
 
 use Craft;
 use craft\base\Model;
+use craft\helpers\UrlHelper;
+use yii\validators\IpValidator;
 
 /**
  * Citrus Settings Model
@@ -39,10 +41,22 @@ class Settings extends Model
      *
      * @var string
      */
-    public $someAttribute = 'Some Default';
+    public $hosts = [];
+
+    // Private Properties
+    // =========================================================================
+
+    /**
+     * Class instance of IpValidator
+     */
+    private $ipValidator;
 
     // Public Methods
     // =========================================================================
+
+    public function init() {
+        $this->ipValidator = new IpValidator;
+    }
 
     /**
      * Returns the validation rules for attributes.
@@ -57,8 +71,76 @@ class Settings extends Model
     public function rules()
     {
         return [
-            ['someAttribute', 'string'],
-            ['someAttribute', 'default', 'value' => 'Some Default'],
+            ['hosts', function ($attribute, $params, $validator) {
+                $rowIndex = 0;
+
+                foreach ($this->$attribute as $host) {
+                    if (empty($host['url'])) {
+                        $this->addError($attribute, [
+                            'row' => $rowIndex,
+                            'cell' => 'url',
+                            'message' => 'The host URL cannot be blank.'
+                        ]);
+                    }
+
+                    if (
+                        !empty($host['hostName']) &&
+                        !preg_match('/^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/', $host['hostName'])
+                    ) {
+                        $this->addError(
+                            $attribute,
+                            [
+                                'row' => $rowIndex,
+                                'cell' => 'hostName',
+                                'message' => 'The host Hostname is invalid for URL "' .
+                                    $host['url'] . '".'
+                            ]
+                        );
+                    }
+
+                    if (
+                        !empty($host['adminIP']) &&
+                        !$this->ipValidator->validate($host['adminIP'])
+                    ) {
+                        $this->addError(
+                            $attribute,
+                            [
+                                'row' => $rowIndex,
+                                'cell' => 'adminIP',
+                                'message' => 'The host Admin IP is invalid for URL "' .
+                                    $host['url'] . '".'
+                            ]
+                        );
+                    }
+
+                    if (
+                        !empty($host['adminPort']) && (
+                            !is_numeric($host['adminPort']) ||
+                            $host['adminPort'] < 1 ||
+                            $host['adminPort'] > 65535
+                        )
+                    ) {
+                        $this->addError(
+                            $attribute,
+                            [
+                                'row' => $rowIndex,
+                                'cell' => 'adminPort',
+                                'message' => 'The host Admin port is invalid for URL "' .
+                                    $host['url'] . '".'
+                            ]
+                        );
+                    }
+
+                    $rowIndex += 1;
+                }
+            }],
+            ['hosts', 'default', 'value' => [
+                'url' => '',
+                'hostName' => '',
+                'adminIP' => '',
+                'adminPort' => '',
+                'adminSecret' => ''
+            ]],
         ];
     }
 }
