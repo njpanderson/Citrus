@@ -10,15 +10,15 @@
 
 namespace njpanderson\citrus\services;
 
-use njpanderson\citrus\Citrus as CitrusBase;
+use njpanderson\citrus\Citrus;
+use njpanderson\citrus\models\URL;
 
 use Craft;
 use craft\base\Component;
-// use craft\web\Request;
-use craft\helpers\UrlHelper;
+use craft\elements\Entry;
 
 /**
- * Citrus Service
+ * EntryUrls Service
  *
  * All of your plugin’s business logic should go in services, including saving data,
  * retrieving data, etc. They provide APIs that your controllers, template variables,
@@ -30,7 +30,7 @@ use craft\helpers\UrlHelper;
  * @package   Citrus
  * @since     0.1.0
  */
-class Citrus extends Component
+class EntryUrls extends Component
 {
     // Public Methods
     // =========================================================================
@@ -41,41 +41,34 @@ class Citrus extends Component
      *
      * From any other plugin file, call it like this:
      *
-     *     Citrus::$plugin->bindings->exampleService()
+     *     Citrus::$plugin->entryurls->exampleService()
      *
      * @return mixed
      */
-    public function exampleService()
+    public function get(Entry $entry)
     {
-        $result = 'something';
-        // Check our Plugin's settings for `someAttribute`
-        if (CitrusBase::$plugin->getSettings()->someAttribute) {
-        }
+        $urls = [];
+        $urls = array_merge($urls, [$this->collectEntryUrl($entry)]);
+        $urls = array_merge($urls, $this->collectRelationalUrls($entry));
 
-        return $result;
+        return $urls;
     }
 
-    /**
-     * Retrieve the 'current' hostname using the active site.
-     * @return string
-     */
-    public static function getCurrentHostName() {
-        return self::getHostnameFromUrl(
-            UrlHelper::siteHost()
-        );
+    private function collectEntryUrl(Entry $entry) {
+        $url = new URL;
+        $url->setEntry($entry);
+
+        return $url;
     }
 
-    /**
-     * Convert a fully qualified URL into the hostname and return.
-     * @return string
-     */
-    public static function getHostnameFromUrl($url) {
-        $url = \parse_url($url);
+    private function collectRelationalUrls(Entry $entry) {
+        $entries = Entry::find()
+            ->relatedTo($entry);
 
-        if (!empty($url['host'])) {
-            return $url['host'];
+        foreach ($entries as $related) {
+            \var_dump($related->slug);
         }
 
-        return '';
+        return [];
     }
 }

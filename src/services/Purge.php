@@ -11,12 +11,12 @@
 namespace njpanderson\citrus\services;
 
 use njpanderson\citrus\Citrus;
-use njpanderson\citrus\services\ElementURLs as ElementURLsService;
+use njpanderson\citrus\services\EntryUrls as EntryURLsService;
 use njpanderson\citrus\jobs\Purge as PurgeJob;
 
 use Craft;
 use craft\base\Component;
-use craft\base\Element;
+use craft\elements\Entry;
 
 /**
  * Purge Service
@@ -46,14 +46,14 @@ class Purge extends Component
      *
      * @return mixed
      */
-    public function purgeElement(Element $element, bool $consoleDebug = false)
+    public function purgeEntry(Entry $entry, bool $consoleDebug = false)
     {
         Craft::info(
-            "Purging element '{$element->slug}' ({$element->id})",
+            "Purging entry '{$entry->slug}' ({$entry->id})",
             __METHOD__
         );
 
-        $urls = Citrus::$plugin->elementurls->get($element);
+        $urls = Citrus::$plugin->entryurls->get($entry);
 
         $queue = Craft::$app->getQueue();
 

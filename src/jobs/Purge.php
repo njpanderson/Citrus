@@ -70,7 +70,10 @@ class Purge extends BaseJob
      */
     public function execute($queue)
     {
-        var_dump($this->url->fullURL);
+        var_dump($this->url->entry->id);
+        var_dump($this->url->entry->slug);
+        var_dump($this->url->fullUrl);
+        var_dump($this->url->host);
         var_dump($this->consoleDebug);
     }
 

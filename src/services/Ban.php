@@ -11,7 +11,7 @@
 namespace njpanderson\citrus\services;
 
 use njpanderson\citrus\Citrus;
-use njpanderson\citrus\services\ElementURLs as ElementURLsService;
+use njpanderson\citrus\services\EntryUrls as EntryUrlsService;
 use njpanderson\citrus\jobs\Purge as PurgeJob;
 
 use Craft;

@@ -94,11 +94,11 @@ class PurgeController extends Controller
             return false;
         }
 
-        $element = Craft::$app->elements->getElementById(
+        $element = Craft::$app->entries->getEntryById(
             (int) $this->id
         );
 
-        $result = Citrus::$plugin->purge->purgeElement($element, true);
+        $result = Citrus::$plugin->purge->purgeEntry($element, true);
 
         return $result;
     }

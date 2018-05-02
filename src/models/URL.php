@@ -11,9 +11,11 @@
 namespace njpanderson\citrus\models;
 
 use njpanderson\citrus\Citrus;
+use njpanderson\citrus\services\General;
 
 use Craft;
 use craft\base\Model;
+use craft\elements\Entry;
 
 /**
  * URL Model
@@ -37,8 +39,9 @@ class URL extends Model
      *
      * @var string
      */
-    public $fullURL = '';
-    public $consoleDebug = false;
+    public $element = null;
+    public $fullUrl = '';
+    public $host = '';
 
     // Public Methods
     // =========================================================================
@@ -56,9 +59,15 @@ class URL extends Model
     public function rules()
     {
         return [
-            [['fullURL'], 'required'],
-            ['fullURL', 'string'],
-            // ['consoleDebug', 'boolean', 'value' => false],
+            [['entry'], 'required'],
+            ['fullUrl', 'string'],
+            ['host', 'string']
         ];
+    }
+
+    public function setEntry(Entry $entry) {
+        $this->entry = $entry;
+        $this->fullUrl = $entry->getUrl();
+        $this->host = General::getHostnameFromUrl($this->fullUrl);
     }
 }

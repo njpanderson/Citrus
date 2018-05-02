@@ -10,15 +10,15 @@
 
 namespace njpanderson\citrus\services;
 
-use njpanderson\citrus\Citrus;
-use njpanderson\citrus\models\URL;
+use njpanderson\citrus\Citrus as Citrus;
 
 use Craft;
 use craft\base\Component;
-use craft\base\Element;
+// use craft\web\Request;
+use craft\helpers\UrlHelper;
 
 /**
- * ElementURLs Service
+ * General Service
  *
  * All of your plugin’s business logic should go in services, including saving data,
  * retrieving data, etc. They provide APIs that your controllers, template variables,
@@ -30,7 +30,7 @@ use craft\base\Element;
  * @package   Citrus
  * @since     0.1.0
  */
-class ElementURLs extends Component
+class General extends Component
 {
     // Public Methods
     // =========================================================================
@@ -41,32 +41,41 @@ class ElementURLs extends Component
      *
      * From any other plugin file, call it like this:
      *
-     *     Citrus::$plugin->elementurls->exampleService()
+     *     Citrus::$plugin->bindings->exampleService()
      *
      * @return mixed
      */
-    public function get(Element $element)
+    public function exampleService()
     {
-        $urls = [];
-        $urls[] = $this->collectElementUrls($element);
-        // $urls[] = $this->getRelationalUrls($element);
+        $result = 'something';
+        // Check our Plugin's settings for `someAttribute`
+        if (CitrusBase::$plugin->getSettings()->someAttribute) {
+        }
 
-        return $urls;
+        return $result;
     }
 
-    private function collectElementUrls(Element $element) {
-        $url = new URL;
-
-        $url->fullURL = $this->getElementUrl($element);
-
-        return $url;
+    /**
+     * Retrieve the 'current' hostname using the active site.
+     * @return string
+     */
+    public static function getCurrentHostName() {
+        return self::getHostnameFromUrl(
+            UrlHelper::siteHost()
+        );
     }
 
-    private function collectRelationalUrls(Element $element) {
+    /**
+     * Convert a fully qualified URL into the hostname and return.
+     * @return string
+     */
+    public static function getHostnameFromUrl($url) {
+        $url = \parse_url($url);
 
-    }
+        if (!empty($url['host'])) {
+            return $url['host'];
+        }
 
-    private function getElementUrl(Element $element) {
-        return $element->uri;
+        return '';
     }
 }

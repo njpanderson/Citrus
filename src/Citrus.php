@@ -43,7 +43,7 @@ use yii\base\Event;
  * @since     0.1.0
  *
  * @property  BindingsService $bindings
- * @property  ElementURLsService $elementurls
+ * @property  EntryUrls $entryurls
  * @property  Settings $settings
  * @method    Settings getSettings()
  */
@@ -178,7 +178,7 @@ class Citrus extends Plugin
         switch ($event->name) {
             case 'afterSaveElement':
             case 'afterDeleteElement':
-                Citrus::$plugin->purge->purgeElement($event->element);
+                // Citrus::$plugin->purge->purgeElement($event->element);
                 break;
         }
     }
